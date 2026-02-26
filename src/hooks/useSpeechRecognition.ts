@@ -1,9 +1,31 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import type { SpeechRecognitionState } from '../types';
 
-const SpeechRecognitionAPI =
-  (window as any).SpeechRecognition ||
-  (window as any).webkitSpeechRecognition;
+interface SpeechRecognitionEvent {
+  resultIndex: number;
+  results: SpeechRecognitionResultList;
+}
+
+interface SpeechRecognitionErrorEvent {
+  error: string;
+}
+
+interface SpeechRecognitionInstance extends EventTarget {
+  continuous: boolean;
+  interimResults: boolean;
+  lang: string;
+  onresult: ((event: SpeechRecognitionEvent) => void) | null;
+  onerror: ((event: SpeechRecognitionErrorEvent) => void) | null;
+  onend: (() => void) | null;
+  start(): void;
+  stop(): void;
+}
+
+const SpeechRecognitionAPI: (new () => SpeechRecognitionInstance) | undefined =
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (window as Record<string, any>).SpeechRecognition ||
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (window as Record<string, any>).webkitSpeechRecognition;
 
 export function useSpeechRecognition() {
   const [state, setState] = useState<SpeechRecognitionState>({
@@ -14,7 +36,7 @@ export function useSpeechRecognition() {
     error: null,
   });
 
-  const recognitionRef = useRef<any>(null);
+  const recognitionRef = useRef<SpeechRecognitionInstance | null>(null);
   const onResultCallback = useRef<((transcript: string) => void) | null>(null);
 
   useEffect(() => {
@@ -25,7 +47,7 @@ export function useSpeechRecognition() {
     recognition.interimResults = true;
     recognition.lang = 'en-US';
 
-    recognition.onresult = (event: any) => {
+    recognition.onresult = (event: SpeechRecognitionEvent) => {
       let interim = '';
       let final = '';
 
@@ -49,8 +71,8 @@ export function useSpeechRecognition() {
       }
     };
 
-    recognition.onerror = (event: any) => {
-      if (event.error === 'no-speech') return; // auto-restarts
+    recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
+      if (event.error === 'no-speech') return;
       setState(prev => ({
         ...prev,
         error: event.error,
@@ -61,7 +83,7 @@ export function useSpeechRecognition() {
     recognition.onend = () => {
       setState(prev => {
         if (prev.isListening) {
-          try { recognition.start(); } catch {}
+          try { recognition.start(); } catch { /* already running */ }
         }
         return prev;
       });
@@ -84,7 +106,7 @@ export function useSpeechRecognition() {
       error: null,
     }));
 
-    try { recognitionRef.current.start(); } catch {}
+    try { recognitionRef.current.start(); } catch { /* already running */ }
   }, []);
 
   const stopListening = useCallback(() => {
