@@ -8,7 +8,7 @@ interface Props {
 
 export function CategorySelect({ onSelect, onBack }: Props) {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-gradient-to-b from-blue-50 to-white">
+    <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-gradient-to-b from-pink-100 to-pink-50">
       <div className="max-w-lg w-full">
         <button
           onClick={onBack}

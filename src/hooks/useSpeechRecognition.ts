@@ -45,7 +45,7 @@ export function useSpeechRecognition() {
     const recognition = new SpeechRecognitionAPI();
     recognition.continuous = true;
     recognition.interimResults = true;
-    recognition.lang = 'en-US';
+    recognition.lang = 'de-DE';
 
     recognition.onresult = (event: SpeechRecognitionEvent) => {
       let interim = '';

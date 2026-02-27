@@ -26,7 +26,7 @@ export function GameBoard({
   const category = CATEGORIES.find(c => c.id === game.category);
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
+    <div className="min-h-screen bg-pink-50 p-4 sm:p-6">
       <div className="max-w-md mx-auto">
         <div className="flex items-center justify-between mb-4">
           <button

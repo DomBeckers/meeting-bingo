@@ -39,11 +39,13 @@ export function detectWords(
 }
 
 const WORD_ALIASES: Record<string, string[]> = {
-  'ci/cd': ['ci cd', 'cicd', 'continuous integration'],
-  'mvp': ['minimum viable product', 'm.v.p.'],
-  'roi': ['return on investment', 'r.o.i.'],
-  'api': ['a.p.i.', 'interface'],
+  'ci/cd': ['ci cd', 'cicd', 'kontinuierliche integration'],
+  'mvp': ['minimum viable product', 'minimalprodukt'],
+  'roi': ['return on investment', 'rendite'],
+  'api': ['a.p.i.', 'schnittstelle'],
   'devops': ['dev ops', 'dev-ops'],
+  'überzahl': ['power play', 'powerplay'],
+  'unterzahl': ['penalty kill'],
 };
 
 export function detectWordsWithAliases(
